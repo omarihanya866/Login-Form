@@ -73,6 +73,4 @@ if (isset($_POST['reg_user'])) {
         header('location: login.php');
     }
 }
-
-
 ?>
