@@ -64,7 +64,6 @@ if($conn)
             </script>';
             exit; // Stop the execution when passwords don't match
         }
-
         // Check if the user email or name already exists in the database
         $sql = "SELECT * FROM user WHERE userName='$userName' OR userEmail='$userEmail'";
         $result = mysqli_query($conn, $sql);

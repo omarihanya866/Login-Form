@@ -500,22 +500,18 @@ include('server.php');
                 }).showToast();
                 return false;
             }
-
+            
             if (password !== confirmPassword) {
                 Toastify({
-                text: "Passwords do not match.",
-                duration: 3000,
-                position: "toast-bottom-left",
-                backgroundColor: "#FF0000",
+                    text: "Passwords do not match.",
+                    duration: 3000,
+                    position: "toast-bottom-right",
+                    backgroundColor: "#000000",
                 }).showToast();
-
-
-
-            // Additional validations for other fields
-
-            // All validations passed, the form can be submitted
-            return true;
+                return false;
             }
+
+            return true;
         }
         </script>
     </body>
