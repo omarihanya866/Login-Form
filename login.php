@@ -12,6 +12,7 @@ include('server.php');
 
         <!-- CSS -->
         <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
         <style>
             /* Google Fonts - Poppins */
             @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
@@ -324,11 +325,11 @@ include('server.php');
                     <header>Login</header>
                     <form action="" method="post">
                         <div class="field input-field">
-                            <input id="email" type="email" placeholder="Email" class="input" required>
+                            <input id="email" type="email" placeholder="Email" class="input" name="userEmail" required>
                         </div>
 
                         <div class="field input-field">
-                            <input id="password" type="password" placeholder="Password" class="password" required>
+                            <input id="password" type="password" placeholder="Password" class="password" name="password" required>
                             <i class='fa fa-eye-slash eye-icon'></i>
                         </div>
 
@@ -352,19 +353,20 @@ include('server.php');
 
             <!-- Signup Form -->
 
-            <div class="form signup" id="create-acct">
+            <div class="form signup" id="create-acct" >
                 <div class="form-content">
                     <header>Signup</header>
-                    <form action="server.php" method="post">
+                    <form action="server.php" method="post" onsubmit="return validate();">
                         <div class="field input-field">
                             <input id="userName" type="text" placeholder="User Name" class="input" name="userName" required>
                         </div>
                         <div class="field input-field">
-                            <input id="tinNumber" type="number" placeholder="Tin Number" class="input" name="tinNumber" required>
-                        </div>
-                        <div class="field input-field">
                             <input id="email-signup" type="email"  placeholder="Email" class="input" name="userEmail" required>
                         </div>
+                        <div class="field input-field">
+                            <input id="tinNumber" type="number" placeholder="Tin Number" class="input" name="tinNumber" required>
+                        </div>
+
                         <div class="field input-field">
                             <input id="phoneNumber" type="number" placeholder="Phone Number" name="phoneNumber" required>
                         </div>
@@ -392,6 +394,7 @@ include('server.php');
         </section>
 
         <!-- JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
         <script>
             const submitButton = document.getElementById("submit");
             const signupButton = document.getElementById("sign-up");
@@ -441,7 +444,79 @@ include('server.php');
             })
             
             })
-            })    
+            })
+            
+            
+            //Data validation
+            //when the reg form is clicked
+            function validate() {
+            var userName = document.getElementById("userName").value;
+            var userEmail = document.getElementById("email-signup").value;
+            var tinNumber = document.getElementById("tinNumber").value;
+            var phoneNumber = document.getElementById("phoneNumber").value;
+            var password = document.getElementById("password-signup").value;
+            var confirmPassword = document.getElementById("confirm-password-signup").value;
+            var password = document.getElementById("password-signup").value;
+            var confirmPassword = document.getElementById("confirm-password-signup").value;
+            var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,}$/;
+            var numericRegex = /^\d+$/;
+
+            if (numericRegex.test(userName)) {
+                Toastify({
+                text: "Invalid Username. It should not contain numbers.",
+                duration: 3000,
+                position: "toast-bottom-right",
+                backgroundColor: "#000000",
+                }).showToast();
+                return false;
+            }
+
+            if (!userEmail.includes('@')) {
+                Toastify({
+                text: "Invalid Email Address.",
+                duration: 3000,
+                position: "toast-bottom-right",
+                backgroundColor: "#000000",
+                }).showToast();
+                return false;
+            }
+
+            if (!phoneNumber.match(/^0\d{9}$/)) {
+                Toastify({
+                text: "Invalid Phone Number. It should start with 0 and be followed by nine digits.",
+                duration: 3000,
+                position: "toast-bottom-right",
+                backgroundColor: "#000000",
+                }).showToast();
+                return false;
+            }
+
+            if (!password.match(passwordRegex)) {
+                Toastify({
+                text: "Invalid Password. It should have at least three characters, one symbol, and one number.",
+                duration: 3000,
+                position: "toast-bottom-left",
+                backgroundColor: "#FF0000",
+                }).showToast();
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                Toastify({
+                text: "Passwords do not match.",
+                duration: 3000,
+                position: "toast-bottom-left",
+                backgroundColor: "#FF0000",
+                }).showToast();
+
+
+
+            // Additional validations for other fields
+
+            // All validations passed, the form can be submitted
+            return true;
+            }
+        }
         </script>
     </body>
 </html>
