@@ -1,5 +1,6 @@
 <?php
 include('server.php');
+
 ?>
 
 <!DOCTYPE html>
@@ -12,6 +13,7 @@ include('server.php');
 
         <!-- CSS -->
         <link href='https://unpkg.com/boxicons@2.1.2/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
         <style>
             /* Google Fonts - Poppins */
@@ -323,7 +325,7 @@ include('server.php');
             <div class="form login" id="main">
                 <div class="form-content">
                     <header>Login</header>
-                    <form action="" method="post">
+                    <form action="userlogin.php" method="post">
                         <div class="field input-field">
                             <input id="email" type="email" placeholder="Email" class="input" name="userEmail" required>
                         </div>
@@ -334,7 +336,7 @@ include('server.php');
                         </div>
 
                         <div class="field button-field">
-                            <button id="submit">Login</button>
+                            <button id="submit" name="login">Login</button>
                         </div>
                     </form>
 
@@ -358,25 +360,25 @@ include('server.php');
                     <header>Signup</header>
                     <form action="server.php" method="post" onsubmit="return validate();">
                         <div class="field input-field">
-                            <input id="userName" type="text" placeholder="User Name" class="input" name="userName" required>
+                            <input id="userName" type="text" placeholder="User Name" class="input" name="userName">
                         </div>
                         <div class="field input-field">
-                            <input id="email-signup" type="email"  placeholder="Email" class="input" name="userEmail" required>
+                            <input id="email-signup" type="text"  placeholder="Email" class="input" name="userEmail">
                         </div>
                         <div class="field input-field">
-                            <input id="tinNumber" type="number" placeholder="Tin Number" class="input" name="tinNumber" required>
-                        </div>
-
-                        <div class="field input-field">
-                            <input id="phoneNumber" type="number" placeholder="Phone Number" name="phoneNumber" required>
-                        </div>
-                        <div class="field input-field">
-                            <input id="password-signup" type="password" placeholder="Create password" class="password" name="password" required>
+                            <input id="tinNumber" type="number" placeholder="Tin Number" class="input" name="tinNumber">
                         </div>
 
                         <div class="field input-field">
-                            <input id="confirm-password-signup" type="password" placeholder="Confirm password" class="password" name="confirmPassword" required>
-                            <i class='bx bx-hide eye-icon'></i>
+                            <input id="phoneNumber" type="number" placeholder="Phone Number" name="phoneNumber">
+                        </div>
+                        <div class="field input-field">
+                            <input id="password-signup" type="password" placeholder="Create password" class="password" name="password">
+                        </div>
+
+                        <div class="field input-field">
+                            <input id="confirm-password-signup" type="password" placeholder="Confirm password" class="password" name="confirmPassword">
+                            <i class='fa fa-eye-slash eye-icon'></i>
                         </div>
 
 
@@ -428,24 +430,22 @@ include('server.php');
             });
 
 
-            /*password icon effect*/
+            /* password icon effect */
             pwShowHide.forEach(eyeIcon => {
-            eyeIcon.addEventListener("click", () => {
-            let pwFields = eyeIcon.parentElement.parentElement.querySelectorAll(".password");
-            
-            pwFields.forEach(password => {
-                if(password.type === "password"){
-                    password.type = "text";
-                    eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
-                    return;
-                }
-                password.type = "password";
-                eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
-            })
-            
-            })
-            })
-            
+                eyeIcon.addEventListener("click", () => {
+                    let pwFields = eyeIcon.parentElement.parentElement.querySelectorAll(".password");
+
+                    pwFields.forEach(password => {
+                        if (password.getAttribute("type") === "password") {
+                            password.setAttribute("type", "text");
+                            eyeIcon.classList.replace("fa-eye-slash", "fa-eye");
+                        } else {
+                            password.setAttribute("type", "password");
+                            eyeIcon.classList.replace("fa-eye", "fa-eye-slash");
+                        }
+                    });
+                });
+            });
             
             //Data validation
             //when the reg form is clicked
@@ -461,6 +461,15 @@ include('server.php');
             var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{3,}$/;
             var numericRegex = /^\d+$/;
 
+            if (userName == null || userName.trim() === "") {
+            Toastify({
+            text: "Username is required.",
+            duration: 3000,
+            position: "toast-bottom-right",
+            backgroundColor: "#000000",
+            }).showToast();
+            return false;
+            }
             if (numericRegex.test(userName)) {
                 Toastify({
                 text: "Invalid Username. It should not contain numbers.",
@@ -471,16 +480,37 @@ include('server.php');
                 return false;
             }
 
-            if (!userEmail.includes('@')) {
+
+            if (userEmail == null || userEmail.trim() === "") {
                 Toastify({
+                    text: "User Email is required.",
+                    duration: 3000,
+                    position: "toast-bottom-right",
+                    backgroundColor: "#000000",
+                }).showToast();
+                return false;
+            }
+            if (!/.+@.+\..+/.test(userEmail)) {
+            Toastify({
                 text: "Invalid Email Address.",
                 duration: 3000,
                 position: "toast-bottom-right",
                 backgroundColor: "#000000",
+            }).showToast();
+            return false;
+            }
+
+
+            if (phoneNumber == null || phoneNumber.trim() === "") {
+                Toastify({
+                    text: "Phone number is required.",
+                    duration: 3000,
+                    position: "toast-bottom-right",
+                    backgroundColor: "#000000",
                 }).showToast();
                 return false;
             }
-
+            
             if (!phoneNumber.match(/^0\d{9}$/)) {
                 Toastify({
                 text: "Invalid Phone Number. It should start with 0 and be followed by nine digits.",
@@ -491,6 +521,16 @@ include('server.php');
                 return false;
             }
 
+
+            if (password == null || password.trim() === "") {
+                Toastify({
+                    text: "Password is required.",
+                    duration: 3000,
+                    position: "toast-bottom-right",
+                    backgroundColor: "#000000",
+                }).showToast();
+                return false;
+            }
             if (!password.match(passwordRegex)) {
                 Toastify({
                 text: "Invalid Password. It should have at least three characters, one symbol, and one number.",
@@ -500,7 +540,17 @@ include('server.php');
                 }).showToast();
                 return false;
             }
-            
+
+            if (confirmPassword == null || confirmPassword.trim() === "") {
+                Toastify({
+                    text: "You must confirm the above password.",
+                    duration: 3000,
+                    position: "toast-bottom-right",
+                    backgroundColor: "#000000",
+                }).showToast();
+                return false;
+            }
+
             if (password !== confirmPassword) {
                 Toastify({
                     text: "Passwords do not match.",
