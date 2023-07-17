@@ -1,17 +1,6 @@
 <?php
-session_start();
-include('conn.php');
+include('security.php');
 
-// Check if the user is not logged in
-if (!isset($_SESSION['userEmail'])) {
-    header("Location: login.php"); // Redirect to the login page
-    exit();
-}
-// If the user is logged in and has already filled the company info, redirect to the dashboard
-if (isset($_SESSION['companyInfoFilled']) && $_SESSION['companyInfoFilled']) {
-    header("Location: userDashboard.php");
-    exit();
-}
 
 
 //If the user clicks the reg btn all details are checked
@@ -56,12 +45,14 @@ if(isset($_POST['companyphoneNumber']))
     $companyphoneNumber = $_POST['companyphoneNumber'];
 }
 
+
 // If the database is connected successfully, the following code will be executed
 if($conn)
 {
     // If the submit button is clicked
     if(isset($_POST['reg_company']))
     {
+        $userEmail = $_SESSION['userEmail'];
         // Check if the user email or name already exists in the database
         $sql = "SELECT * FROM company WHERE companyName='$companyName' OR companyEmail='$companyEmail'";
         $result = mysqli_query($conn, $sql);
@@ -73,18 +64,28 @@ if($conn)
         else
         {
             // If the user doesn't exist, create a new user and insert the data into the database
-            $sql = "INSERT INTO company(companyName, companyType, companyAddress, vrnNumber, companytinNumber, companyEmail, companyphoneNumber) VALUES('$companyName', '$companyType', '$companyAddress', '$vrnNumber', '$companytinNumber', '$companyEmail','$companyphoneNumber')";
+            $sql = "UPDATE company SET 
+            companyName='$companyName',
+            companyType='$companyType',
+            companyAddress='$companyAddress',
+            vrnNumber='$vrnNumber',
+            companytinNumber='$companytinNumber',
+            companyEmail='$companyEmail',
+            companyphoneNumber='$companyphoneNumber'
+            WHERE userEmail='$userEmail'";
 
-            // If the data is successfully inserted into the database
-            if(mysqli_query($conn, $sql))
-            {
+            if (mysqli_query($conn, $sql)) 
+            {   
+                // Redirect to the dashboard
                 header("Location: userDashboard.php");
+                exit();
+            } 
+            else 
+                {
+                // Handle the error
+                echo "Error updating company info: " . mysqli_error($conn);
+                }
             }
-            else
-            {
-                echo "Data not recorded. Please try again later.";
-            }
-        }
     }
     
 

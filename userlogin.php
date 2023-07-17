@@ -15,6 +15,7 @@ if (isset($_POST['login'])) {
         $storedPassword = $row['password'];
 
         // Verify the password
+        // Verify the password
         if ($password === $storedPassword) {
             // Password is correct, log in the user
             $_SESSION['userEmail'] = $userEmail;
@@ -24,11 +25,20 @@ if (isset($_POST['login'])) {
             $companyInfoResult = mysqli_query($conn, $companyInfoSql);
 
             if (mysqli_num_rows($companyInfoResult) > 0) {
-                // Company info is filled, redirect to the dashboard
-                header("Location: userDashboard.php");
-                exit();
+                $row = mysqli_fetch_assoc($companyInfoResult);
+
+                // Check if any of the required fields are empty
+                if (empty($row['companyName']) || empty($row['companyType']) || empty($row['companyAddress']) || empty($row['vrnNumber']) || empty($row['companytinNumber']) || empty($row['companyEmail']) || empty($row['companyphoneNumber'])) {
+                    // Redirect to the fill company info page
+                    header("Location: companyInfo.php");
+                    exit();
+                } else {
+                    // All required fields are filled, redirect to the dashboard
+                    header("Location: userDashboard.php");
+                    exit();
+                }
             } else {
-                // Company info is not filled, redirect to fill company info page
+                // Company info not found, redirect to fill company info page
                 header("Location: companyInfo.php");
                 exit();
             }
